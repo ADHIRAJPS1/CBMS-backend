@@ -47,8 +47,14 @@ const assignPromoServices = async (obj) => {
 		if (cam[0].affectedRows == "0") {
 			return { data: [], msg: "No promo code Found" };
 		} else {
-			const promo = await ClientPromo.knex()
-				.raw(`select * from client_promo where campaign_id='${campaign_id}' and promo_code='${promo_code}';
+	// 		const promo = await ClientPromo.knex()
+	// 			.raw(`select * from client_promo where campaign_id='${campaign_id}' and promo_code='${promo_code}';
+	// `);
+	const promo = await ClientPromo.knex()
+				.raw(`select cp.*,coc.campaign_url  from client_promo as cp
+				join
+				 client_org_campaigns as coc on coc.campaign_id='${campaign_id}'
+				  where cp.campaign_id='${campaign_id}' and cp.promo_code='${promo_code}';
 	`);
 
 			return { data: promo[0], msg: "promo  is redeemed" };
