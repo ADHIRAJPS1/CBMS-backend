@@ -35,6 +35,7 @@ const promoCreateServices = async (obj, campaign_id, batch_id) => {
 };
 const assignPromoServices = async (obj) => {
   try {
+	   console.log("obj is",obj);
     const { campaign_id, promo_code } = obj;
 
     //const cam = await ClientPromo.query().patchAndFetchById(campaign_id,{"consumption_count":"consumption_count+1"})
@@ -45,13 +46,15 @@ const assignPromoServices = async (obj) => {
       cam = await ClientPromo.knex()
         .raw(`update client_promo set consumption_count=consumption_count+1 where
 	 promo_code='${promo_code}' and consumption_count < total_count`);
+	     console.log("cam 1 is",cam);
     }
 	else{
     cam = await ClientPromo.knex()
       .raw(`update client_promo set consumption_count=consumption_count+1 where
 	campaign_id='${campaign_id}' and promo_code='${promo_code}' and consumption_count < total_count`);
+	 console.log("cam 2 is",cam);
 	}
-	  console.log("cam is",cam);
+	 
     if (cam[0].affectedRows == "0") {
       return { data: [], msg: "No promo code Found" };
     } else {
