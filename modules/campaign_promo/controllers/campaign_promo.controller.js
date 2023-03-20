@@ -109,7 +109,6 @@ const checkBin = async (req, res) => {
 			bin: req.body.bin,
 			campaign_id: req.params.campaign_id,
 		};
-		console.log("obj",obj);
 		const response = await checkBinServices(obj);
 		return Response.success(res, response);
 	} catch (err) {
