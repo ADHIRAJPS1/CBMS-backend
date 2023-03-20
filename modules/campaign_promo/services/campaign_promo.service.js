@@ -46,10 +46,11 @@ const assignPromoServices = async (obj) => {
         .raw(`update client_promo set consumption_count=consumption_count+1 where
 	 promo_code='${promo_code}' and consumption_count < total_count`);
     }
+	else{
     cam = await ClientPromo.knex()
       .raw(`update client_promo set consumption_count=consumption_count+1 where
 	campaign_id='${campaign_id}' and promo_code='${promo_code}' and consumption_count < total_count`);
-
+	}
     if (cam[0].affectedRows == "0") {
       return { data: [], msg: "No promo code Found" };
     } else {
