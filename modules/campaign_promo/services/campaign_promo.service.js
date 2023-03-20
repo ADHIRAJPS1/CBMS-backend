@@ -163,7 +163,7 @@ const checkBinServices = async (obj) => {
       return { data: null, msg: "Invalid bin number or campaign id." };
     } else {
       const promo = await getPromo(campaignId[0].campaign_id);
-      console.log("promo", promo);
+     // console.log("promo", promo);
       if (!promo || Object.keys(promo).length < 1) {
         return {
           data: promo,
@@ -179,7 +179,7 @@ const checkBinServices = async (obj) => {
       return { data, msg: "Valid bin number" };
     }
   } catch (err) {
-    console.log(err);
+   // console.log(err);
     throw ApiError.internal(err);
   }
 };
