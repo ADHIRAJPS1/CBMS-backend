@@ -51,6 +51,7 @@ const assignPromoServices = async (obj) => {
       .raw(`update client_promo set consumption_count=consumption_count+1 where
 	campaign_id='${campaign_id}' and promo_code='${promo_code}' and consumption_count < total_count`);
 	}
+	  console.log("cam is",cam);
     if (cam[0].affectedRows == "0") {
       return { data: [], msg: "No promo code Found" };
     } else {
@@ -68,8 +69,8 @@ const assignPromoServices = async (obj) => {
           .raw(`select cp.*,coc.campaign_url  from client_promo as cp
 			join
 			 client_org_campaigns as coc on coc.campaign_id=cp.campaign_id
-			  where  cp.promo_code='${promo_code}';
-`);
+			  where  cp.promo_code='${promo_code}';`);
+	      	      console.log("promo is",promo);
       } else {
         promo = await ClientPromo.knex()
           .raw(`select cp.*,coc.campaign_url  from client_promo as cp
@@ -78,7 +79,7 @@ const assignPromoServices = async (obj) => {
 			  where cp.campaign_id='${campaign_id}' and cp.promo_code='${promo_code}';
 `);
       }
-
+ console.log("promo is final is",promo);
       return { data: promo[0], msg: "promo  is redeemed" };
     }
   } catch (err) {
