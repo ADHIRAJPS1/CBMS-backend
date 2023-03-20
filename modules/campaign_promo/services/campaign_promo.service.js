@@ -39,8 +39,14 @@ const assignPromoServices = async (obj) => {
 
     //const cam = await ClientPromo.query().patchAndFetchById(campaign_id,{"consumption_count":"consumption_count+1"})
     //.where("promo_code","=",promo_code);
-
-    const cam = await ClientPromo.knex()
+    let cam = [];
+    let promo = [];
+    if (campaign_id === "5") {
+      cam = await ClientPromo.knex()
+        .raw(`update client_promo set consumption_count=consumption_count+1 where
+	 promo_code='${promo_code}' and consumption_count < total_count`);
+    }
+    cam = await ClientPromo.knex()
       .raw(`update client_promo set consumption_count=consumption_count+1 where
 	campaign_id='${campaign_id}' and promo_code='${promo_code}' and consumption_count < total_count`);
 
@@ -56,13 +62,22 @@ const assignPromoServices = async (obj) => {
       // 			 client_org_campaigns as coc on coc.campaign_id='${campaign_id}'
       // 			  where cp.campaign_id='${campaign_id}' and cp.promo_code='${promo_code}';
       // `);
+      if (campaign_id === "5") {
+        promo = await ClientPromo.knex()
+          .raw(`select cp.*,coc.campaign_url  from client_promo as cp
+			join
+			 client_org_campaigns as coc on coc.campaign_id=cp.campaign_id
+			  where cp.campaign_id='${campaign_id}' and cp.promo_code='${promo_code}';
+`);
+      } else {
+        promo = await ClientPromo.knex()
+          .raw(`select cp.*,coc.campaign_url  from client_promo as cp
+			join
+			 client_org_campaigns as coc on coc.campaign_id='${campaign_id}'
+			  where cp.campaign_id='${campaign_id}' and cp.promo_code='${promo_code}';
+`);
+      }
 
-      const promo = await ClientPromo.knex()
-        .raw(`select cp.*,coc.campaign_url  from client_promo as cp
-				join
-				 client_org_campaigns as coc on coc.campaign_id='${campaign_id}'
-				  where cp.campaign_id='${campaign_id}' and cp.promo_code='${promo_code}';
-	`);
       return { data: promo[0], msg: "promo  is redeemed" };
     }
   } catch (err) {
@@ -163,7 +178,7 @@ const checkBinServices = async (obj) => {
       return { data: null, msg: "Invalid bin number or campaign id." };
     } else {
       const promo = await getPromo(campaignId[0].campaign_id);
-     // console.log("promo", promo);
+      // console.log("promo", promo);
       if (!promo || Object.keys(promo).length < 1) {
         return {
           data: promo,
@@ -179,7 +194,7 @@ const checkBinServices = async (obj) => {
       return { data, msg: "Valid bin number" };
     }
   } catch (err) {
-   // console.log(err);
+    // console.log(err);
     throw ApiError.internal(err);
   }
 };
