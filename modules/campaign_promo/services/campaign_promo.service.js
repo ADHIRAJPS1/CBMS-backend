@@ -78,13 +78,34 @@ const assignPromoServices = async (obj) => {
 			  where cp.campaign_id='${campaign_id}' and cp.promo_code='${promo_code}';
 `);
       }
- console.log("promo is final is",promo);
       return { data: promo[0], msg: "promo  is redeemed" };
     }
   } catch (err) {
     throw ApiError.internal(err);
   }
 };
+
+
+const assignCampaignPromoServices = async (obj) => {
+  try {
+    const { campaign_id } = obj;
+
+    promo = await ClientPromo.knex()
+      .raw(`select promo_code from client_promo  where
+      campaign_id='${campaign_id}' and assigned=0  and expires_at >= now() limit 1;`);
+	
+        update = await ClientPromo.knex()
+          .raw(` update client_promo set assigned=1 where promo_code='${promo[0]}' and campaign_id='${campaign_id}'`);
+      
+      return { data: promo[0], msg: "promo  is Assigned" };
+    
+  } catch (err) {
+    throw ApiError.internal(err);
+  }
+};
+
+
+
 
 const getPromo = async (campaign_id) => {
   try {
@@ -320,5 +341,7 @@ module.exports = {
   checkBinServices,
   checkPromoStatusServices,
   activatePromoServices,
+assignCampaignPromoServices,
+
   //updateClientByIdServices,
 };
