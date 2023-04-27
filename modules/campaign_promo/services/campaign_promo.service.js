@@ -91,11 +91,14 @@ const assignCampaignPromoServices = async (obj) => {
     const { campaign_id } = obj;
 
     promo = await ClientPromo.knex()
-      .raw(`select promo_code from client_promo  where
-      campaign_id='${campaign_id}' and assigned=0  and expires_at >= now() limit 1;`);
+      .raw(`select promo_code,cp.expires_at,coc.campaign_url from client_promo
+      as cp
+      join client_org_campaigns as coc on coc.campaign_id=cp.campaign_id
+        where
+            cp.campaign_id='${campaign_id}' and cp.assigned=0  and cp.expires_at >= now() limit 1;`);
 	
         update = await ClientPromo.knex()
-          .raw(` update client_promo set assigned=1 where promo_code='${promo[0]}' and campaign_id='${campaign_id}'`);
+          .raw(` update client_promo set assigned=1 where promo_code='${promo[0][0].promo_code}' and campaign_id='${campaign_id}'`);
       
       return { data: promo[0], msg: "promo  is Assigned" };
     
