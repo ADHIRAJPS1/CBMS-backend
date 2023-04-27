@@ -91,7 +91,7 @@ const assignCampaignPromoServices = async (obj) => {
     const { campaign_id } = obj;
 
     promo = await ClientPromo.knex()
-      .raw(`select promo_code,coc.campaign_url from client_promo
+      .raw(`select promo_code,cp.expires_at,coc.campaign_url from client_promo
       as cp
       join client_org_campaigns as coc on coc.campaign_id=cp.campaign_id
         where
