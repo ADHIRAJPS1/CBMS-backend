@@ -13,6 +13,7 @@ const {
 	checkBinServices,
 	activatePromoServices,
 	checkPromoStatusServices,
+	assignCampaignPromoServices,
 	//updateClientByIdServices,
 } = require("../services/campaign_promo.service");
 const readXlsxFile = require("read-excel-file/node");
@@ -61,6 +62,22 @@ const assignPromo = async (req, res) => {
 		};
 
 		const response = await assignPromoServices(obj);
+		return Response.success(res, response);
+	} catch (err) {
+		if (err instanceof ApiError) {
+			return Response.error(res, err);
+		}
+		return Response.error(res, ApiError.internal(res, err));
+	}
+};
+
+const assignCampaignPromo = async (req, res) => {
+	try {
+		const obj = {
+			campaign_id: req.body.campaign_id,
+		};
+
+		const response = await assignCampaignPromoServices(obj);
 		return Response.success(res, response);
 	} catch (err) {
 		if (err instanceof ApiError) {
@@ -204,4 +221,5 @@ module.exports = {
 	checkBin,
 	checkPromoStatus,
 	activatePromo,
+	assignCampaignPromo,
 };

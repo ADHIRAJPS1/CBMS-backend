@@ -20,5 +20,8 @@ module.exports = (app) => {
 	router.get("/promocode/status", api_auth, campaign_promo.checkPromoStatus);
 	router.post("/promocode/status", api_auth, campaign_promo.activatePromo);
 
+
+	//campaign payment
+	router.post("/campaign/assignpromo", api_auth, campaign_promo.assignCampaignPromo);
 	app.use("/api/v1/campaign_promo", router);
 };
