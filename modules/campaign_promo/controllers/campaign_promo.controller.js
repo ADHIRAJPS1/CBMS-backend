@@ -14,6 +14,7 @@ const {
 	activatePromoServices,
 	checkPromoStatusServices,
 	assignCampaignPromoServices,
+	updateConsumptionCountService,
 	//updateClientByIdServices,
 } = require("../services/campaign_promo.service");
 const readXlsxFile = require("read-excel-file/node");
@@ -209,6 +210,19 @@ const activatePromo = async (req, res) => {
 	}
 };
 
+const updateConsumptionCount = async (req, res)=>{
+	try {
+		const promocodeIds = req.body.promocodeIds;
+		const response = await updateConsumptionCountService(promocodeIds.join(", "));
+		return Response.success(res, response);
+	} catch (err) {
+		if (err instanceof ApiError) {
+			return Response.error(res, err);
+		}
+		return Response.error(res, ApiError.internal(res, err));
+	}
+}
+
 module.exports = {
 	create,
 	removePromo,
@@ -222,4 +236,5 @@ module.exports = {
 	checkPromoStatus,
 	activatePromo,
 	assignCampaignPromo,
+	updateConsumptionCount
 };
