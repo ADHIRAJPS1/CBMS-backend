@@ -15,6 +15,7 @@ module.exports = (app) => {
 	router.get("/campaigns/all", campaign_promo.getAllCampaign);
 	router.delete("/", campaign_promo.removePromo);
 	router.delete("/:batch_id", campaign_promo.removeBatch);
+	router.patch("/consumptionCount", campaign_promo.updateConsumptionCount);
 
 	//Microtek
 	router.get("/promocode/status", api_auth, campaign_promo.checkPromoStatus);
