@@ -1,0 +1,37 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: circleci/node:16
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: npm i
+  deploy:
+    machine:
+      enabled: true
+    steps:
+      - checkout
+      - run:
+          name: Install rsync
+          command: |
+            sudo apt-get update && sudo apt-get install -y rsync
+      - run:
+          name: Deploy to server
+          command: |
+            rsync -azP --exclude={.env} -e "ssh -o StrictHostKeyChecking=accept-new -i ~/.ssh/id_rsa" ./* $AWS_USER_NAME@$AWS_HOST:/var/www/cbms_backend/
+            ssh -o StrictHostKeyChecking=accept-new -i ~/.ssh/id_rsa $AWS_USER_NAME@$AWS_HOST "cd /var/www/cbms_backend/ && pm2 stop ums_backend && npm i && pm2 restart ums_backend"
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - main
