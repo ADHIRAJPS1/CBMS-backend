@@ -22,7 +22,7 @@ jobs:
           name: Deploy to server
           command: |
             rsync -azP --exclude={.env} -e "ssh -o StrictHostKeyChecking=accept-new -i ~/.ssh/id_rsa" ./* $AWS_USER_NAME@$AWS_HOST:/var/www/cbms_backend/
-            ssh -o StrictHostKeyChecking=accept-new -i ~/.ssh/id_rsa $AWS_USER_NAME@$AWS_HOST "cd /var/www/cbms_backend/ && pm2 stop ums_backend && npm i && pm2 restart ums_backend"
+            ssh -o StrictHostKeyChecking=accept-new -i ~/.ssh/id_rsa $AWS_USER_NAME@$AWS_HOST "cd /var/www/cbms_backend/ && pm2 stop cbms_backend && npm i && pm2 restart cbms_backend"
 workflows:
   version: 2
   build-and-deploy:
