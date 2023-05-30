@@ -10,6 +10,7 @@ const {
 const ApiError = require("../../../utils/apiError");
 const { raw } = require("objection");
 const CampaignBin = require("../models/campaign_bin.model");
+const { get_current_date } = require("../../../utils/utilities");
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
@@ -46,12 +47,12 @@ const assignPromoServices = async (obj) => {
         .raw(`update client_promo set consumption_count=consumption_count+1 where
 	 promo_code='${promo_code}' and consumption_count < total_count`);
     }
-	else{
-    cam = await ClientPromo.knex()
-      .raw(`update client_promo set consumption_count=consumption_count+1 where
+    else {
+      cam = await ClientPromo.knex()
+        .raw(`update client_promo set consumption_count=consumption_count+1 where
 	campaign_id='${campaign_id}' and promo_code='${promo_code}' and consumption_count < total_count`);
-	}
-	 
+    }
+
     if (cam[0].affectedRows == "0") {
       return { data: [], msg: "No promo code Found" };
     } else {
@@ -96,12 +97,12 @@ const assignCampaignPromoServices = async (obj) => {
       join client_org_campaigns as coc on coc.campaign_id=cp.campaign_id
         where
             cp.campaign_id='${campaign_id}' and cp.assigned=0  and cp.expires_at >= now() limit 1;`);
-	
-        update = await ClientPromo.knex()
-          .raw(` update client_promo set assigned=1 where promo_code='${promo[0][0].promo_code}' and campaign_id='${campaign_id}'`);
-      
-      return { data: promo[0], msg: "promo  is Assigned" };
-    
+
+    update = await ClientPromo.knex()
+      .raw(` update client_promo set assigned=1 where promo_code='${promo[0][0].promo_code}' and campaign_id='${campaign_id}'`);
+
+    return { data: promo[0], msg: "promo  is Assigned" };
+
   } catch (err) {
     throw ApiError.internal(err);
   }
@@ -318,6 +319,18 @@ const activatePromoServices = async (campaign_id, promo_code) => {
   }
 };
 
+const updateConsumptionCountService = async (promocodeIds) => {
+  try {
+    const result = await ClientPromo.knex()
+    .raw(`UPDATE client_promo SET consumption_count = consumption_count - 1, modified_at="${get_current_date()}" WHERE client_promo_id IN (${promocodeIds}) AND consumption_count>0 AND is_deleted=false`)
+    
+    console.log("updateConsumptionCountService:",result);
+    return { data: {affectedRows: result.affectedRows}, msg: "Promocode consumption count updated successfully!" };
+  } catch (err) {
+    throw ApiError.internal(err);
+  }
+}
+
 // const updateClientByIdServices = async (id,obj) => {
 // try {
 
@@ -344,7 +357,8 @@ module.exports = {
   checkBinServices,
   checkPromoStatusServices,
   activatePromoServices,
-assignCampaignPromoServices,
+  assignCampaignPromoServices,
+  updateConsumptionCountService
 
   //updateClientByIdServices,
 };
