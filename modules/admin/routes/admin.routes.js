@@ -3,6 +3,7 @@ module.exports = (app) => {
 const auth = require("../../../middlewares/auth_admin");
 const { getAdmins, getAdminById, createAdmin, adminLogin, updateAdmin, deleteAdmin,getAdminByToken } = require("../controller/admin.controller");
 
+
 let router = require("express").Router();
 
 router.get("/", getAdmins);
