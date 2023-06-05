@@ -35,7 +35,37 @@ const update = async (req, res)=>{
     }
 }
 
+const getAllBanners = async (req, res) => {
+    try{
+
+        const cid = req.params.id;
+        const bannerdetails = await CampaignBannerService.getCampaignBanners(cid);
+        res.send(bannerdetails);
+    }catch(err){
+        return Response.error(res, err);
+    }
+};
+
+const deleteCampaignBanner = async (req, res) => {
+    try{
+        const bannerid = req.params.id;
+        console.log(" banner id ", bannerid);
+        const deleteStatus = await CampaignBannerService.deleteOneCampaignWithBannerId(bannerid);
+        if(!deleteStatus){
+            res.send({
+                msg: `CAMPAIGN ${cid} WITH BANNER id ${bid} NOT FOUND`
+            })
+        }else{
+            res.send(deleteStatus);
+        }
+    }catch(err){
+        return Response.error(res, err);
+    }
+}
+
 module.exports={
     create,
-    update
-}
+    update,
+    getAllBanners,
+    deleteCampaignBanner
+};
