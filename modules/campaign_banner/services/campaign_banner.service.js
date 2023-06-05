@@ -36,15 +36,7 @@ class CampaignBannerService {
             const campaign_banner = await CampaignBanner.query().findOne({ id: id, is_deleted: 0 });
             if (!campaign_banner) throw ApiError.notFound("Campaign banner does not exist!");
             
-
-            const new_campaign_banner = await CampaignBanner.query().insert({
-                id: uuidv4(),
-                campaign_id: data.campaign_id,
-                banner_id: data.banner_id,
-                alt: data.alt ? data.alt : null,
-                href: data.href ? data.href : null,
-                sequence_no: data.sequence_no ? data.sequence_no : null
-            });
+            const new_campaign_banner = await CampaignBanner.query().patchAndFetchById(id, data);
 
             return new_campaign_banner;
 

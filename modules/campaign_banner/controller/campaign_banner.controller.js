@@ -22,7 +22,7 @@ const update = async (req, res)=>{
     try {
         const id = req.params.id;
         const data = req.body;
-        if(!id || !data) return Response.error(res, ApiError.badRequest("Please fill details."));
+        if(!id || !data || !data?.banner_id) return Response.error(res, ApiError.badRequest("Please fill details."));
         
         const updatedCampaignBanner = await CampaignBannerService.update(id, data);
         return Response.success(res, {
