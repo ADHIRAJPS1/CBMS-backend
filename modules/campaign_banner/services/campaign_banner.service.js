@@ -35,10 +35,12 @@ class CampaignBannerService {
         try {
             const campaign_banner = await CampaignBanner.query().findOne({ id: id, is_deleted: 0 });
             if (!campaign_banner) throw ApiError.notFound("Campaign banner does not exist!");
-            
-            const new_campaign_banner = await CampaignBanner.query().patchAndFetchById(id, data);
+            for (let key in data){
+                if(!data[key]) delete data[key];
+            }
+            const updated_campaign_banner = await CampaignBanner.query().patchAndFetchById(id, data);
 
-            return new_campaign_banner;
+            return updated_campaign_banner;
 
         } catch (err) {
             throw err;

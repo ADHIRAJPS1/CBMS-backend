@@ -46,7 +46,9 @@ class BannerService {
         try {
             const bannerExist = await Banner.query().findOne({id:id, is_deleted:0});
             if (!bannerExist) throw ApiError.notFound(`Banner id ${id} not found`);
-
+            for (let key in data){
+                if(!data[key]) delete data[key];
+            }
             const updatedBanner = await Banner.query().patchAndFetchById(id, data);
         
             return updatedBanner;
