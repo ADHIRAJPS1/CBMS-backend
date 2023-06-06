@@ -191,9 +191,26 @@ const checkBinServices = async (obj) => {
 
     let campaignId = [];
     if (campaign_id === "5") {
-      campaignId = await CampaignBin.query()
+      if(bin.toString()[0]=="4"){
+        const promo = await getPromo(campaign_id);
+        if (!promo || Object.keys(promo).length < 1) {
+          return {
+            data: promo,
+            msg: "Unable to fetch promocode. Invalid campaign id.",
+          };
+        }
+
+        const promo_code = promo[0].promo_code;
+        const data = {
+          promo_code,
+          campaign_id,
+        };
+        return { data, msg: "Valid bin number" };
+      }else{
+        campaignId = await CampaignBin.query()
         .select("campaign_id")
         .where("bin", "=", bin);
+      }
     } else {
       campaignId = await CampaignBin.query()
         .select("campaign_id")
