@@ -51,7 +51,7 @@ class CampaignBannerService {
     async getCampaignBanners(id) {
         try {
             const campaignbanners = await CampaignBanner.knex()
-                .raw(`SELECT campaign_banner.id,campaign_banner.campaign_id,campaign_banner.banner_id, campaign_banner.alt , campaign_banner.href , campaign_banner.sequence_no, banners.title , banners.img_d , banners.img_m FROM campaign_banner join banners where (banners.id = campaign_banner.banner_id) and (campaign_banner.campaign_id = ${id}) and (campaign_banner.is_deleted = 0) and (banners.is_deleted = 0);`);
+                .raw(`SELECT campaign_banner.id,campaign_banner.campaign_id,campaign_banner.banner_id, campaign_banner.alt , campaign_banner.href , campaign_banner.sequence_no,campaign_banner.modified_at, campaign_banner.created_at,  banners.title , banners.img_d , banners.img_m FROM campaign_banner join banners where (banners.id = campaign_banner.banner_id) and (campaign_banner.campaign_id = ${id}) ;`);
             return campaignbanners[0];
         } catch (err) {
             throw err;
@@ -77,12 +77,23 @@ class CampaignBannerService {
                 const deletedstatus = await CampaignBanner.query().where('id', id).update({is_deleted: 1});
                 if(deletedstatus > 0){
                     return "DELETED SUCCESSFULLY";
+                    
                 }
             }
             
         }catch(err) {
             throw err;
         }
+    }
+
+    async getCampaignWithId(campaignId,bannerId) {
+        try{
+            const bannerdata = (await CampaignBanner.query()).find({'campaign_id':campaignId, 'banner_id':bannerId});
+            return bannerdata;
+        } catch(err) {
+            throw err;
+        }
+
     }
 
 }
