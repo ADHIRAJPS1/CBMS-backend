@@ -37,9 +37,10 @@ const update = async (req, res)=>{
 
 const getAllBanners = async (req, res) => {
     try{
-
-        const cid = req.params.id;
+        // res.send("hii");
+        const cid = req.params.cid;
         const bannerdetails = await CampaignBannerService.getCampaignBanners(cid);
+        console.log("banner details = ", bannerdetails);
         res.send(bannerdetails);
     }catch(err){
         return Response.error(res, err);
@@ -61,11 +62,23 @@ const deleteCampaignBanner = async (req, res) => {
     }catch(err){
         return Response.error(res, err);
     }
+};
+
+const getBannerdata = async (req, res) => {
+    try{
+        const bannerid = req.params.bid;
+        const campaignid = req.params.cid;
+        const bannerdetails = await CampaignBannerService.getCampaignWithId(campaignid, bannerid);
+        res.send(bannerdetails);
+    } catch(err) {
+        return Response.error(res, err);
+    }
 }
 
 module.exports={
     create,
     update,
     getAllBanners,
-    deleteCampaignBanner
+    deleteCampaignBanner, 
+    getBannerdata
 };
