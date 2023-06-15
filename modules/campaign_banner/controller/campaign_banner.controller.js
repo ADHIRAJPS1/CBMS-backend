@@ -73,6 +73,17 @@ const getBannerdata = async (req, res) => {
     } catch(err) {
         return Response.error(res, err);
     }
+};
+
+const updateBanner = async (req, res) => {
+    try {
+        const bannerid = req.params.bid;
+        const campaignid = req.params.cid;
+        const data = req.body;
+        const updatedetails = await CampaignBannerService.updateCampaignBanner(bannerid , campaignid , data);
+    }   catch (err) {
+        return Response.error(res, err);
+    }
 }
 
 module.exports={
