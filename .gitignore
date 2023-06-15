@@ -136,3 +136,7 @@ dist
 
 # Dev environment files
 .gitpod.yml
+
+
+# ignore sql file
+.table.sql

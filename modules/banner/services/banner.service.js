@@ -2,6 +2,8 @@ const ApiError = require("../../../utils/apiError");
 const Banner = require("../model/Banner.model");
 const { v4: uuidv4 } = require("uuid");
 
+
+
 class BannerService {
     async getAllBanners(data){
         try {
@@ -55,6 +57,19 @@ class BannerService {
           } catch (err) {
             throw err
           }
+    }
+
+    async deleteBanner(id) {
+        try{
+            const bannerExist = await Banner.query().findOne({id:id, is_deleted:0});
+            if(!bannerExist) throw ApiError.notFound(`Banner id ${id} not found`)
+            else {
+                const deletestatus = await Banner.query().patch({is_deleted: 1}).findById(id);
+                return deletestatus; 
+            }
+        } catch(err){
+            throw err;
+        }
     }
 }
 
