@@ -33,6 +33,6 @@ jobs:
           # password: ${{ secrets.PASSWORD }}
           script: |
               cd /mnt/data/home/master/applications/ccrphsverq/public_html/
-              pm2 stop cbms_backend
               npm i
+              pm2 stop cbms_backend
               pm2 restart cbms_backend
