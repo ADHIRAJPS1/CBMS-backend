@@ -12,11 +12,11 @@ module.exports = (app)=>{
     // get all banners with details of a particular campaign_id and details of each banner
     router.get("/:cid", campaign_banner.getAllBanners);      
     
-    router.patch("/delete/:id", auth , campaign_banner.deleteCampaignBanner);
+    router.patch("/delete/:id", campaign_banner.deleteCampaignBanner);
 
     // get details of one campaign in a banner
     router.get("/:cid/:bid", campaign_banner.getBannerdata);
-
+    
     // update a campaign banner 
     // router.patch("/:cid/:bid", campaign_banner.updateBanner);
     
