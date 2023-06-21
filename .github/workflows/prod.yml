@@ -32,6 +32,6 @@ jobs:
           # password: ${{ secrets.PASSWORD }}
           script: |
               cd /home/master/applications/ccrphsverq/public_html/
-              npm i
               pm2 stop cbms-be
+              npm i
               pm2 restart cbms-be
